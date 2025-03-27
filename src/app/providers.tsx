@@ -1,4 +1,4 @@
-﻿/// src/app/providers.tsx
+﻿// src/app/providers.tsx
 
 "use client";
 
@@ -6,24 +6,21 @@ import {
     ThirdwebProvider,
     useAddress,
     useConnect,
-    useCreateWalletInstance,
     metamaskWallet,
     walletConnect,
     coinbaseWallet,
+    WalletConfig,
 } from "@thirdweb-dev/react";
 import { Base, Ethereum, Polygon, Optimism } from "@thirdweb-dev/chains";
-import { useEffect } from "react";
 import { shortenAddress } from "thirdweb/utils";
 
 function WalletConnectApp() {
     const address = useAddress();
     const connect = useConnect();
-    const createWalletInstance = useCreateWalletInstance();
 
-    const handleConnect = async (walletConfig: any) => {
+    const handleConnect = async (walletProvider: () => WalletConfig<any>) => {
         try {
-            const wallet = createWalletInstance(walletConfig);
-            await connect(wallet);
+            await connect(walletProvider());
         } catch (error) {
             console.error("Failed to connect wallet:", error);
             alert("Wallet connection failed. Please try again.");
@@ -40,19 +37,19 @@ function WalletConnectApp() {
 
                 <button
                     className="bg-purple-600 text-white py-2 px-4 rounded"
-                    onClick={() => handleConnect(metamaskWallet())}
+                    onClick={() => handleConnect(metamaskWallet)}
                 >
                     Connect with MetaMask
                 </button>
                 <button
                     className="bg-blue-600 text-white py-2 px-4 rounded"
-                    onClick={() => handleConnect(walletConnect())}
+                    onClick={() => handleConnect(walletConnect)}
                 >
                     Connect with WalletConnect
                 </button>
                 <button
                     className="bg-gray-800 text-white py-2 px-4 rounded"
-                    onClick={() => handleConnect(coinbaseWallet())}
+                    onClick={() => handleConnect(coinbaseWallet)}
                 >
                     Connect with Coinbase Wallet
                 </button>
