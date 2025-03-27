@@ -1,17 +1,15 @@
-﻿// src/app/providers.tsx
-
-"use client";
+﻿"use client";
 
 import {
     ThirdwebProvider,
     useAddress,
     useConnect,
     metamaskWallet,
-    walletConnect,
     coinbaseWallet,
+    walletConnect,
     WalletConfig,
 } from "@thirdweb-dev/react";
-import { Base, Ethereum, Polygon, Optimism } from "@thirdweb-dev/chains";
+import { Ethereum, Base, Polygon, Optimism } from "@thirdweb-dev/chains";
 import { shortenAddress } from "thirdweb/utils";
 
 function WalletConnectApp() {
@@ -28,40 +26,29 @@ function WalletConnectApp() {
     };
 
     return (
-        <ThirdwebProvider
-            supportedChains={[Ethereum, Base, Polygon, Optimism]}
-            clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
-        >
-            <div className="p-6 max-w-md mx-auto flex flex-col gap-4">
-                <h2 className="text-2xl font-semibold">Connect Your Wallet</h2>
+        <div>
+            <button onClick={() => handleConnect(metamaskWallet)}>Connect MetaMask</button>
+            <button onClick={() => handleConnect(coinbaseWallet)}>Connect Coinbase</button>
+            <button onClick={() => handleConnect(walletConnect)}>Connect WalletConnect</button>
 
-                <button
-                    className="bg-purple-600 text-white py-2 px-4 rounded"
-                    onClick={() => handleConnect(metamaskWallet)}
-                >
-                    Connect with MetaMask
-                </button>
-                <button
-                    className="bg-blue-600 text-white py-2 px-4 rounded"
-                    onClick={() => handleConnect(walletConnect)}
-                >
-                    Connect with WalletConnect
-                </button>
-                <button
-                    className="bg-gray-800 text-white py-2 px-4 rounded"
-                    onClick={() => handleConnect(coinbaseWallet)}
-                >
-                    Connect with Coinbase Wallet
-                </button>
-
-                {address && (
-                    <p className="text-green-500 mt-4">
-                        Connected as: {shortenAddress(address)}
-                    </p>
-                )}
-            </div>
-        </ThirdwebProvider>
+            {address && (
+                <p style={{ marginTop: "1rem" }}>
+                    Connected: {shortenAddress(address)}
+                </p>
+            )}
+        </div>
     );
 }
 
-export default WalletConnectApp;
+export function Providers({ children }: { children: React.ReactNode }) {
+    return (
+        <ThirdwebProvider
+            activeChain={Ethereum}
+            supportedChains={[Ethereum, Base, Polygon, Optimism]}
+            clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
+        >
+            <WalletConnectApp />
+            {children}
+        </ThirdwebProvider>
+    );
+}
