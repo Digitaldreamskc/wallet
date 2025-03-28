@@ -1,10 +1,11 @@
-import { createThirdwebClient } from "thirdweb";
+﻿import { createThirdwebClient } from "thirdweb";
 
-// Check if clientId is NOT provided (note the negation)
-if (!process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID) {
-  throw new Error("No client ID provided");
+const clientId = process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID;
+
+if (!clientId) {
+    throw new Error("❌ Environment variable NEXT_PUBLIC_THIRDWEB_CLIENT_ID is missing.");
 }
 
-export const client = createThirdwebClient({
-  clientId: process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID
-});
+const client = createThirdwebClient({ clientId });
+
+export default client;
